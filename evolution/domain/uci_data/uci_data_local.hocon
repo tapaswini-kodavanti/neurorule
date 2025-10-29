@@ -14,20 +14,22 @@
     },
     "domain_config": {
         "domain_name"   : "uci_data",
-        "fitness"       : "uci_data_fitness",
+        # "fitness"       : "uci_data_fitness",
+        "fitness"       : "uci_nn_fitness",
         "config_filter_class_name": "SklearnNetworkConfigFilter",
         "evaluator_class_name": "UciDataEvaluator",
         # "data_set": "load_iris"
-        # "data_set": "load_wine"
-        "data_set": "load_breast_cancer"
+        "data_set": "load_wine"
+        # "data_set": "load_breast_cancer"
+        "synthetic_data_file": "wine_synthetic_data.csv",
     },
     "evolution": {
-        "nb_generations": 5000,
+        "nb_generations": 1000,
         "population_size": 100,
         "nb_elites": 10,
         "parent_selection": "tournament",
         "fitness" : [
-            { "metric_name": "score", "maximize": true, "target": 0.94}
+            { "metric_name": "score", "maximize": true, "target": 1.0}
         ],
         "remove_population_pct": 0.8,
         "early_stop" : true,
@@ -39,9 +41,10 @@
         "esp_host_official": "v1.esp.evolution.ml",
         "esp_host": null,
         "esp_port": 50051,
-        # "representation": "RuleBased",
-        "representation": "NNWeights",
-        "experiment_id":"uci_cancer_test",
+        "representation": "RuleBased",
+        # "representation": "NNWeights",
+        "experiment_id":"uci_wine_test",
+        # "experiment_id":"uci_cancer_test",
         "reevaluate_elites": false,
         "distributed" : false,
         "coevolution" : false,
