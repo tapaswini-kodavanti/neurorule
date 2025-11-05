@@ -9,11 +9,12 @@ if EXPERIMENTS_DIR not in sys.path:
     print(f"Directory being added to sys.path: {EXPERIMENTS_DIR}")
 
 import numpy as np
-from BreastCancerMLP import BreastCancerMLP
+from MLPModule import MLP
 from sklearn.preprocessing import StandardScaler
 
 
-def uci_data_fitness(inputs, predictions, target_values):
+# def uci_data_fitness(inputs, predictions, target_values):
+def uci_data_fitness(predictions, target_values):
     # inputs is added here to keep it consistent in the evaluator class
     fitness = 0
     number_of_cases = len(target_values)
@@ -23,11 +24,12 @@ def uci_data_fitness(inputs, predictions, target_values):
         fitness = number_of_hits / number_of_cases
     return fitness
 
-def uci_nn_fitness(inputs, predictions, target_values):
-    model = BreastCancerMLP(input_dim=inputs.shape[1], num_classes=3)
+# def uci_nn_fitness(inputs, predictions, target_values):
+def uci_nn_fitness(inputs, predictions, weights_filename, num_classes):
+    model = MLP(input_dim=inputs.shape[1], num_classes=num_classes)
 
     # Load weights
-    WEIGHTS_PATH = os.path.join(EXPERIMENTS_DIR, 'wine_mlp_weights.pth') # TODO: don't hardcode this
+    WEIGHTS_PATH = os.path.join(EXPERIMENTS_DIR, weights_filename) # TODO: don't hardcode this
     model.load_state_dict(torch.load(WEIGHTS_PATH))
     model.eval()
 

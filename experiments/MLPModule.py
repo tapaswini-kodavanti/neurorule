@@ -1,6 +1,6 @@
 import torch.nn as nn
 
-class BreastCancerMLP(nn.Module):
+class MLP(nn.Module):
     def __init__(self, input_dim, num_classes=2):
         super().__init__()
         self.net = nn.Sequential(

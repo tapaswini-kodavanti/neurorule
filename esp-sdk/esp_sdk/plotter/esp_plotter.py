@@ -116,6 +116,34 @@ class EspPlotter(ABC):
 
         # Close the figure so it's not displayed in 'inline' mode.
         plt.close()
+    
+    @staticmethod
+    def plot_metrics(stats_filename, title, metric_names, targets=None, include_trendline=False):
+        """
+        Plots multiple metrics from an experiment.
+
+        :param stats_filename: CSV with experiment metrics
+        :param title: Plot title base (metric name appended automatically)
+        :param metric_names: Iterable of metric column names
+        :param targets: Optional list or dict of constant target values for each metric
+        :param include_trendline: Whether to include trendline on each plot
+        """
+        # Normalize targets to a dict
+        targets_dict = {}
+        if isinstance(targets, dict):
+            targets_dict = targets
+        elif isinstance(targets, (list, tuple)):
+            targets_dict = {metric: tgt for metric, tgt in zip(metric_names, targets)}
+
+        for metric_name in metric_names:
+            metric_target = targets_dict.get(metric_name)
+            metric_title = f"{title} — {metric_name}"
+            EspPlotter.plot_metric(stats_filename,
+                                metric_title,
+                                metric_name,
+                                target=metric_target,
+                                include_trendline=include_trendline)
+
 
     @staticmethod
     def _save_graph(fig, metric_name, stats_filename):
@@ -146,20 +174,53 @@ def _do_main():
     parser = argparse.ArgumentParser()
     parser.add_argument("filename",
                         type=str,
-                        help='Path to the file containing the experiment stats')
+                        help="CSV filename of experiment stats")
     parser.add_argument("title",
                         type=str,
-                        help='Title of the plot')
-    parser.add_argument("-m", "--metric", default="score",
+                        help="Title for the plots")
+    parser.add_argument("-m", "--metric",
                         dest="metric",
                         type=str,
-                        help="Name of the metric to plot")
-    parser.add_argument("-t", "--target", default=None,
+                        help="Single metric to plot")
+    parser.add_argument("-ms", "--metrics",
+                        dest="metrics",
+                        nargs="+",
+                        help="List of metrics to plot")
+    parser.add_argument("-t", "--target",
                         dest="target",
                         type=float,
-                        help="Target we're trying to reach for this metric")
+                        help="Target value for single metric case")
+    parser.add_argument("-ts", "--targets",
+                        dest="targets",
+                        nargs="+",
+                        type=float,
+                        help="Targets for multiple metrics (matches order)")
+    parser.add_argument("--trendline",
+                        action="store_true",
+                        help="Include trendline")
     args = parser.parse_args()
-    EspPlotter.plot_metric(args.filename, args.title, args.metric, args.target)
+
+    # Multiple metrics case
+    if args.metrics:
+        EspPlotter.plot_metrics(
+            args.filename,
+            args.title,
+            metric_names=args.metrics,
+            targets=args.targets,
+            include_trendline=args.trendline
+        )
+    # Single metric fallback (backward compatible)
+    elif args.metric:
+        EspPlotter.plot_metric(
+            args.filename,
+            args.title,
+            args.metric,
+            args.target,
+            args.trendline
+        )
+    else:
+        parser.error("Must specify either --metric or --metrics")
+
 
 
 if __name__ == '__main__':

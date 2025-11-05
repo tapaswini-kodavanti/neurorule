@@ -41,8 +41,7 @@ class UciDataEvaluator(EspEvaluator):
         leaf_config = self.config.get("LEAF", empty_config)
         persistence_dir = leaf_config.get("persistence_dir", ".")
         self.experiment_id = leaf_config.get("experiment_id", "unknown")
-        self.output_directory = os.path.join(persistence_dir,
-                                             self.experiment_id)
+        self.output_directory = os.path.join(persistence_dir, self.experiment_id)
 
         # Get various incarnations of the domain-specific config
         # #1 - modern way: using domain_config key.
@@ -54,8 +53,8 @@ class UciDataEvaluator(EspEvaluator):
             #       for now, this makes distributed evaulation work
             domain_config = self.config.get("domain", self.config)
 
-        self.fitness_function_name = \
-            domain_config.get("fitness", "uci_data_fitness")
+        self.fitness_function_name = domain_config.get("fitness", "uci_data_fitness")
+        self.weights_filename = domain_config.get("weights_file", "")
 
         # Create network specification inputs and outputs based on the data
         config_filter = SklearnNetworkConfigFilter()
@@ -63,15 +62,21 @@ class UciDataEvaluator(EspEvaluator):
 
         # Get the data set read in during the filtering
         data_set = config_filter.get_data_set()
+        self.target_names = data_set.target_names
+        self.num_classes = len(data_set.target_names)
 
         # Load/convert the data once for evaluation
         data_frame = pd.DataFrame(data_set.data, columns=data_set.feature_names)
-        self.input_vectors = data_frame.values.T.tolist()
-        self.inputs = data_frame.values
 
-        # Keeping labels separate makes prediction simple
-        self.labels = data_set.target.tolist()
 
+        ### We need to differentiate between BASELINE data and EVOLUTION data
+        ### If a synthetic data file name is provided, then we know it is the EVOLUTION data
+        ### Else, we can set the BASELINE data to be the EVOLUTION data
+
+
+        self.baseline_input_vectors = data_frame.values.T.tolist()
+        self.baseline_inputs = data_frame.values
+        self.baseline_labels = data_set.target.tolist()
 
         # Check if synthetic data is used
         synthetic_data_file = domain_config.get("synthetic_data_file", None)
@@ -84,15 +89,77 @@ class UciDataEvaluator(EspEvaluator):
                 data = data_frame[data_set.feature_names]
                 targets = data_frame[list(data_set.target_names)]
                 
-                self.s_input_vectors = data.values.T.tolist()
-                self.s_inputs = data.values
-                self.s_labels = targets.values.tolist()
+                self.evolution_input_vectors = data.values.T.tolist()
+                self.evolution_inputs = data.values
+                self.evolution_labels = targets.values.tolist()
             else:
                 raise FileNotFoundError(f"Synthetic data file not found: {synthetic_data_path}")
         else:
-            self.s_input_vectors = []
-            self.s_inputs = []
-            self.s_labels = []
+            self.evolution_input_vectors = data_frame.values.T.tolist()
+            self.evolution_inputs = data_frame.values
+            self.evolution_labels = data_set.target.tolist()
+
+        
+        # Set up in-distribution and out-of-distribution baseline
+        in_distribution_data = domain_config.get("in_distribution_data", None)
+        out_of_distribution_data = domain_config.get("out_of_distribution_data", None)
+        if in_distribution_data and out_of_distribution_data:
+            synthetic_in_path = os.path.join(EXPERIMENTS_DIR, in_distribution_data)
+            synthetic_out_path = os.path.join(EXPERIMENTS_DIR, out_of_distribution_data)
+            if os.path.exists(synthetic_in_path) and os.path.exists(synthetic_out_path):
+                print(f"Using synthetic data from {synthetic_in_path} and {synthetic_out_path}")
+
+                in_data_frame = pd.read_csv(synthetic_in_path)
+                in_data = in_data_frame[data_set.feature_names]
+                in_targets = in_data_frame[list(data_set.target_names)]
+                
+                self.in_dist_input_vectors = in_data.values.T.tolist()
+                self.in_dist_inputs = in_data.values
+                self.in_dist_labels = in_targets.values.argmax(axis=1).tolist()
+
+                out_data_frame = pd.read_csv(synthetic_out_path)
+                out_data = out_data_frame[data_set.feature_names]
+                out_targets = out_data_frame[list(data_set.target_names)]
+                
+                self.out_dist_input_vectors = out_data.values.T.tolist()
+                self.out_dist_inputs = out_data.values
+                self.out_dist_labels = out_targets.values.argmax(axis=1).tolist()
+            else:
+                raise FileNotFoundError(f"In/out data file not found: {synthetic_in_path}, {synthetic_out_path}")
+
+
+
+
+
+
+
+        # self.input_vectors = data_frame.values.T.tolist()
+        # self.inputs = data_frame.values
+
+        # # Keeping labels separate makes prediction simple
+        # self.labels = data_set.target.tolist()
+
+
+        # # Check if synthetic data is used
+        # synthetic_data_file = domain_config.get("synthetic_data_file", None)
+        # if synthetic_data_file:
+        #     synthetic_data_path = os.path.join(EXPERIMENTS_DIR, synthetic_data_file)
+        #     if os.path.exists(synthetic_data_path):
+        #         print(f"Using synthetic data from {synthetic_data_path}")
+
+        #         data_frame = pd.read_csv(synthetic_data_path)
+        #         data = data_frame[data_set.feature_names]
+        #         targets = data_frame[list(data_set.target_names)]
+                
+        #         self.s_input_vectors = data.values.T.tolist()
+        #         self.s_inputs = data.values
+        #         self.s_labels = targets.values.tolist()
+        #     else:
+        #         raise FileNotFoundError(f"Synthetic data file not found: {synthetic_data_path}")
+        # else:
+        #     self.s_input_vectors = []
+        #     self.s_inputs = []
+        #     self.s_labels = []
     
         
     
@@ -113,9 +180,9 @@ class UciDataEvaluator(EspEvaluator):
             "uci_nn_fitness": uci_nn_fitness
         }
 
-        input_vectors = self.s_input_vectors if len(self.s_input_vectors) > 0 else self.input_vectors
-        inputs = self.s_inputs if len(self.s_inputs) > 0 else self.inputs
-        targets = self.s_labels if len(self.s_labels) > 0 else self.labels
+        # input_vectors = self.s_input_vectors if len(self.s_input_vectors) > 0 else self.input_vectors
+        # inputs = self.s_inputs if len(self.s_inputs) > 0 else self.inputs
+        # targets = self.s_labels if len(self.s_labels) > 0 else self.labels
 
         # argmax gives us a single answer for classification sake
         # RulesModel expects feature-major input (list of feature arrays) so
@@ -124,13 +191,13 @@ class UciDataEvaluator(EspEvaluator):
         # pass `self.inputs` for non-RuleSet predictors.
         if isinstance(candidate, RuleSet):
             # Rule-based predictor expects feature-major list-of-arrays
-            input_for_predictor = input_vectors
+            input_for_predictor = self.evolution_input_vectors
         else:
             # Typical ML predictors expect a single 2D array (samples x features)
             # but some Keras models are built as multiple Input layers (one per
             # feature) and therefore expect a list of input arrays. Detect that
             # and adapt accordingly.
-            input_for_predictor = inputs
+            input_for_predictor = self.evolution_inputs
             try:
                 # Keras Model has an `inputs` attribute which is a list of
                 # Input tensors. If the model expects multiple separate inputs
@@ -149,19 +216,71 @@ class UciDataEvaluator(EspEvaluator):
                 # passing the 2D array; the predictor may still accept it.
                 input_for_predictor = self.inputs
 
+
+        ### Run through fitness functions
+
+        def run_fitness(function_name, inputs, preds, targets):
+            if function_name == "uci_data_fitness":
+                return fitness_functions[function_name](preds, targets)
+            elif function_name == "uci_nn_fitness":
+                return fitness_functions[function_name](inputs, preds, self.weights_filename, self.num_classes)
+            else:
+                raise ValueError("fitness function not found")
+
         predictions = predictor.predict(input_for_predictor)
         predictions = predictions.argmax(axis=1).tolist()
-        accuracy = fitness_functions[self.fitness_function_name](
-            inputs, predictions, targets) # we use inputs here to be consistent with predictor input
-
-        # Using predictions array as the behavior of the classifier
+        accuracy = run_fitness(self.fitness_function_name, self.evolution_inputs, predictions, self.evolution_labels)
         metrics[BEHAVIOR_PREFIX+"score_vector"] = predictions
         metrics["score"] = accuracy
 
 
-        baseline_preds = predictor.predict(self.input_vectors)  # TODO: make robust for NN evolution, not just rulesets
-        baseline_preds = baseline_preds.argmax(axis=1).tolist()
-        accuracy_to_baseline = fitness_functions["uci_data_fitness"](
-            self.inputs, baseline_preds, self.labels)
-        metrics["accuracy_to_baseline"] = accuracy_to_baseline
+
+        ## Run through baseline metrics
+
+        def run_baseline_metrics(input_vectors, inputs, labels, metric_name):
+            baseline_preds = predictor.predict(input_vectors)  # TODO: make robust for NN evolution, not just rulesets
+            baseline_preds = baseline_preds.argmax(axis=1).tolist()
+            accuracy_to_baseline = run_fitness("uci_data_fitness", inputs, baseline_preds, labels)
+            metrics[metric_name] = accuracy_to_baseline
+
+        # Baseline is always compared against original data
+        # baseline_preds = predictor.predict(self.baseline_input_vectors)  # TODO: make robust for NN evolution, not just rulesets
+        # baseline_preds = baseline_preds.argmax(axis=1).tolist()
+        # accuracy_to_baseline = run_fitness("uci_data_fitness", self.baseline_inputs, baseline_preds, self.baseline_labels)
+        # metrics["accuracy_to_baseline"] = accuracy_to_baseline
+
+        run_baseline_metrics(self.baseline_input_vectors, self.baseline_inputs, self.baseline_labels, "baseline_accuracy")
+
+        # Also calculate in-distribution and out-of-distribution accuracy
+        run_baseline_metrics(self.in_dist_input_vectors, self.in_dist_inputs, self.in_dist_labels, "in_distribution_accuracy")
+        run_baseline_metrics(self.out_dist_input_vectors, self.out_dist_inputs, self.out_dist_labels, "out_of_distribution_accuracy")
+        
+
         return metrics
+
+
+
+
+
+
+
+
+
+        # predictions = predictor.predict(input_for_predictor)
+        # predictions = predictions.argmax(axis=1).tolist()
+        # accuracy = fitness_functions[self.fitness_function_name](
+        #     # inputs, predictions, targets) # we use inputs here to be consistent with predictor input
+        #     self.evolution_inputs, predictions, self.evolution_labels) # we use inputs here to be consistent with predictor input
+
+        # # Using predictions array as the behavior of the classifier
+        # metrics[BEHAVIOR_PREFIX+"score_vector"] = predictions
+        # metrics["score"] = accuracy
+
+
+        # # Baseline is always compared against original data
+        # baseline_preds = predictor.predict(self.baseline_input_vectors)  # TODO: make robust for NN evolution, not just rulesets
+        # baseline_preds = baseline_preds.argmax(axis=1).tolist()
+        # accuracy_to_baseline = fitness_functions["uci_data_fitness"](
+        #     self.baseline_inputs, baseline_preds, self.baseline_labels)
+        # metrics["accuracy_to_baseline"] = accuracy_to_baseline
+        # return metrics
