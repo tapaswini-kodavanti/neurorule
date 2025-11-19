@@ -1,0 +1,166 @@
+{
+    "network": {
+        "hidden_layers": [
+            {
+                "layer_name": "hidden_1",
+                "layer_type": "Dense",
+                "layer_params": {
+                    "units": 32,
+                    "activation": "tanh",
+                    "use_bias": true
+                }
+            }
+        ],
+        "inputs": [
+            {
+                "name": "alcohol",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            },
+            {
+                "name": "malic_acid",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            },
+            {
+                "name": "ash",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            },
+            {
+                "name": "alcalinity_of_ash",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            },
+            {
+                "name": "magnesium",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            },
+            {
+                "name": "total_phenols",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            },
+            {
+                "name": "flavanoids",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            },
+            {
+                "name": "nonflavanoid_phenols",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            },
+            {
+                "name": "proanthocyanins",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            },
+            {
+                "name": "color_intensity",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            },
+            {
+                "name": "hue",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            },
+            {
+                "name": "od280/od315_of_diluted_wines",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            },
+            {
+                "name": "proline",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            }
+        ],
+        "outputs": [
+            {
+                "name": "Class",
+                "size": 3,
+                "activation": "softmax",
+                "use_bias": true,
+                "values": [
+                    "class_0",
+                    "class_1",
+                    "class_2"
+                ]
+            }
+        ]
+    },
+    "domain_config": {
+        "domain_name": "uci_data",
+        "fitness": "uci_nn_fitness",
+        "config_filter_class_name": "SklearnNetworkConfigFilter",
+        "evaluator_class_name": "UciDataEvaluator",
+        "data_set": "load_wine",
+        "synthetic_data_file": "data/wine/datasets/synthetic/80_percent/150_samples.csv",
+        "weights_file": "data/wine/model_weights/baseline/80_percent.pth",
+        "in_distribution_data": "data/wine/datasets/baseline/80_percent/in_distribution.csv",
+        "out_of_distribution_data": "data/wine/datasets/baseline/80_percent/out_of_distribution.csv"
+    },
+    "evolution": {
+        "nb_generations": 200,
+        "population_size": 100,
+        "nb_elites": 10,
+        "parent_selection": "tournament",
+        "fitness": [
+            {
+                "metric_name": "score",
+                "maximize": true,
+                "target": 1.0
+            }
+        ],
+        "remove_population_pct": 0.8,
+        "early_stop": true,
+        "novelty_selection_multiplier": 1.5,
+        "novelty_pulsation_cycle": 1,
+        "mutation_probability": 0.7
+    },
+    "LEAF": {
+        "esp_host_official": "v1.esp.evolution.ml",
+        "esp_host": null,
+        "esp_port": 50051,
+        "representation": "RuleBased",
+        "experiment_id": "uci_wine_test",
+        "reevaluate_elites": false,
+        "distributed": false,
+        "coevolution": false,
+        "version": "0.0.1",
+        "persistence_dir": "candidate-solutions/",
+        "candidates_to_persist": "best"
+    },
+    "experiment_config": {
+        "domain": "uci_data"
+    }
+}
