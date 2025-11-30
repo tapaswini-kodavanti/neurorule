@@ -1,0 +1,180 @@
+{
+    "age_state": 0,
+    "default_action": "0",
+    "default_action_coefficient": 0.85,
+    "min_maxes": {
+        "0": {
+            "max": 77.0,
+            "min": 0.0,
+            "total": 982636.2560878072
+        },
+        "1": {
+            "max": 200.0,
+            "min": 0.0,
+            "total": 2451953.903211922
+        },
+        "10": {
+            "max": 1.0,
+            "min": 0.0,
+            "total": 11200.0
+        },
+        "11": {
+            "max": 1.0,
+            "min": 0.0,
+            "total": 3689.0
+        },
+        "12": {
+            "max": 1.0,
+            "min": 0.0,
+            "total": 7511.0
+        },
+        "2": {
+            "max": 603.0,
+            "min": 0.0,
+            "total": 3877029.2860302073
+        },
+        "3": {
+            "max": 1.0,
+            "min": 0.0,
+            "total": 4262.4175743203195
+        },
+        "4": {
+            "max": 202.0,
+            "min": 0.0,
+            "total": 2516990.3424479966
+        },
+        "5": {
+            "max": 6.2,
+            "min": -2.6,
+            "total": 16960.593999721917
+        },
+        "6": {
+            "max": 1.0,
+            "min": 0.0,
+            "total": 14126.0
+        },
+        "7": {
+            "max": 1.0,
+            "min": 0.0,
+            "total": 3976.0
+        },
+        "8": {
+            "max": 1.0,
+            "min": 0.0,
+            "total": 4445.0
+        },
+        "9": {
+            "max": 1.0,
+            "min": 0.0,
+            "total": 994.0
+        }
+    },
+    "representation_type": "RuleBased",
+    "rules": [
+        {
+            "action": "1",
+            "action_coefficient": 0.7,
+            "action_lookback": 0,
+            "conditions": [
+                {
+                    "first_state_coefficient": 0.78,
+                    "first_state_exponent": 1,
+                    "first_state_key": "9",
+                    "first_state_lookback": 0,
+                    "operator": "<",
+                    "second_state_coefficient": 0.62,
+                    "second_state_exponent": 1,
+                    "second_state_key": "6",
+                    "second_state_lookback": 0,
+                    "second_state_value": 0.09
+                }
+            ],
+            "times_applied": 1917
+        },
+        {
+            "action": "0",
+            "action_coefficient": 0.81,
+            "action_lookback": 0,
+            "conditions": [
+                {
+                    "first_state_coefficient": 0.88,
+                    "first_state_exponent": 1,
+                    "first_state_key": "12",
+                    "first_state_lookback": 0,
+                    "operator": "<=",
+                    "second_state_coefficient": 0.15,
+                    "second_state_exponent": 1,
+                    "second_state_key": "8",
+                    "second_state_lookback": 0,
+                    "second_state_value": 0.58
+                },
+                {
+                    "first_state_coefficient": 0.32,
+                    "first_state_exponent": 1,
+                    "first_state_key": "4",
+                    "first_state_lookback": 0,
+                    "operator": ">=",
+                    "second_state_coefficient": 0.58,
+                    "second_state_exponent": 1,
+                    "second_state_key": "value",
+                    "second_state_lookback": 0,
+                    "second_state_value": 0.01
+                }
+            ],
+            "times_applied": 1557
+        },
+        {
+            "action": "2",
+            "action_coefficient": 0.04,
+            "action_lookback": 0,
+            "conditions": [
+                {
+                    "first_state_coefficient": 0.06,
+                    "first_state_exponent": 1,
+                    "first_state_key": "2",
+                    "first_state_lookback": 0,
+                    "operator": "<=",
+                    "second_state_coefficient": 0.33,
+                    "second_state_exponent": 1,
+                    "second_state_key": "11",
+                    "second_state_lookback": 0,
+                    "second_state_value": 0.55
+                }
+            ],
+            "times_applied": 344
+        },
+        {
+            "action": "1",
+            "action_coefficient": 0.04,
+            "action_lookback": 0,
+            "conditions": [
+                {
+                    "first_state_coefficient": 0.74,
+                    "first_state_exponent": 1,
+                    "first_state_key": "11",
+                    "first_state_lookback": 0,
+                    "operator": ">=",
+                    "second_state_coefficient": 0.06,
+                    "second_state_exponent": 1,
+                    "second_state_key": "9",
+                    "second_state_lookback": 0,
+                    "second_state_value": 0.4
+                },
+                {
+                    "first_state_coefficient": 0.41,
+                    "first_state_exponent": 3,
+                    "first_state_key": "5",
+                    "first_state_lookback": 0,
+                    "operator": ">",
+                    "second_state_coefficient": 0.88,
+                    "second_state_exponent": 1,
+                    "second_state_key": "7",
+                    "second_state_lookback": 0,
+                    "second_state_value": 0.76
+                }
+            ],
+            "times_applied": 1355
+        }
+    ],
+    "times_applied": 1080
+}

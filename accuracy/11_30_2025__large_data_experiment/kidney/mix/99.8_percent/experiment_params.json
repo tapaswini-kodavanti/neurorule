@@ -1,0 +1,163 @@
+{
+    "network": {
+        "hidden_layers": [
+            {
+                "layer_name": "hidden_1",
+                "layer_type": "Dense",
+                "layer_params": {
+                    "units": 32,
+                    "activation": "tanh",
+                    "use_bias": true
+                }
+            }
+        ],
+        "inputs": [
+            {
+                "name": "Creatinine",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            },
+            {
+                "name": "BUN",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            },
+            {
+                "name": "GFR",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            },
+            {
+                "name": "Urine_Output",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            },
+            {
+                "name": "Diabetes",
+                "size": 1,
+                "values": [
+                    "int"
+                ]
+            },
+            {
+                "name": "Hypertension",
+                "size": 1,
+                "values": [
+                    "int"
+                ]
+            },
+            {
+                "name": "Age",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            },
+            {
+                "name": "Protein_in_Urine",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            },
+            {
+                "name": "Water_Intake",
+                "size": 1,
+                "values": [
+                    "float"
+                ]
+            },
+            {
+                "name": "Medication_ACE Inhibitor",
+                "size": 1,
+                "values": [
+                    "int"
+                ]
+            },
+            {
+                "name": "Medication_ARB",
+                "size": 1,
+                "values": [
+                    "int"
+                ]
+            },
+            {
+                "name": "Medication_Diuretic",
+                "size": 1,
+                "values": [
+                    "int"
+                ]
+            }
+        ],
+        "outputs": [
+            {
+                "name": "CKD_Status",
+                "size": 2,
+                "activation": "softmax",
+                "use_bias": true,
+                "values": [
+                    "CKD_Status_0",
+                    "CKD_Status_1"
+                ]
+            }
+        ]
+    },
+    "domain_config": {
+        "domain_name": "uci_data",
+        "fitness": "uci_nn_fitness",
+        "config_filter_class_name": "SklearnNetworkConfigFilter",
+        "evaluator_class_name": "UciDataEvaluator",
+        "data_set": "load_wine",
+        "raw_data_file": "data/kidney/datasets/raw_data/kidney_modified.csv",
+        "target_names": [
+            "CKD_Status_0",
+            "CKD_Status_1"
+        ],
+        "synthetic_data_file": "data/kidney/datasets/mix/99.8_percent/300_samples.csv",
+        "weights_file": "data/kidney/model_weights/baseline/99.8_percent.pth",
+        "in_distribution_data": "data/kidney/datasets/baseline/99.8_percent/in_distribution.csv",
+        "out_of_distribution_data": "data/kidney/datasets/baseline/99.8_percent/out_of_distribution.csv"
+    },
+    "evolution": {
+        "nb_generations": 200,
+        "population_size": 100,
+        "nb_elites": 10,
+        "parent_selection": "tournament",
+        "fitness": [
+            {
+                "metric_name": "score",
+                "maximize": true,
+                "target": 1.0
+            }
+        ],
+        "remove_population_pct": 0.8,
+        "early_stop": true,
+        "novelty_selection_multiplier": 1.5,
+        "novelty_pulsation_cycle": 1,
+        "mutation_probability": 0.7
+    },
+    "LEAF": {
+        "esp_host_official": "v1.esp.evolution.ml",
+        "esp_host": null,
+        "esp_port": 50051,
+        "representation": "RuleBased",
+        "experiment_id": "uci_kidney_test",
+        "reevaluate_elites": false,
+        "distributed": false,
+        "coevolution": false,
+        "version": "0.0.1",
+        "persistence_dir": "candidate-solutions/",
+        "candidates_to_persist": "best"
+    },
+    "experiment_config": {
+        "domain": "uci_data"
+    }
+}

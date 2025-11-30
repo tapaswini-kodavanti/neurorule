@@ -1,0 +1,140 @@
+{
+    "age_state": 0,
+    "default_action": "0",
+    "default_action_coefficient": 0.14,
+    "min_maxes": {
+        "0": {
+            "max": 77.0,
+            "min": 0.0,
+            "total": 1544142.6881379827
+        },
+        "1": {
+            "max": 200.0,
+            "min": 0.0,
+            "total": 3853070.419333019
+        },
+        "10": {
+            "max": 1.0,
+            "min": 0.0,
+            "total": 17600.0
+        },
+        "11": {
+            "max": 1.0,
+            "min": 0.0,
+            "total": 5797.0
+        },
+        "12": {
+            "max": 1.0,
+            "min": 0.0,
+            "total": 11803.0
+        },
+        "2": {
+            "max": 603.0,
+            "min": 0.0,
+            "total": 6092474.592333177
+        },
+        "3": {
+            "max": 1.0,
+            "min": 0.0,
+            "total": 6698.0847596462045
+        },
+        "4": {
+            "max": 202.0,
+            "min": 0.0,
+            "total": 3955270.5381325637
+        },
+        "5": {
+            "max": 6.2,
+            "min": -2.6,
+            "total": 26652.361999562716
+        },
+        "6": {
+            "max": 1.0,
+            "min": 0.0,
+            "total": 22198.0
+        },
+        "7": {
+            "max": 1.0,
+            "min": 0.0,
+            "total": 6248.0
+        },
+        "8": {
+            "max": 1.0,
+            "min": 0.0,
+            "total": 6985.0
+        },
+        "9": {
+            "max": 1.0,
+            "min": 0.0,
+            "total": 1562.0
+        }
+    },
+    "representation_type": "RuleBased",
+    "rules": [
+        {
+            "action": "1",
+            "action_coefficient": 0.04,
+            "action_lookback": 0,
+            "conditions": [
+                {
+                    "first_state_coefficient": 0.41,
+                    "first_state_exponent": 1,
+                    "first_state_key": "12",
+                    "first_state_lookback": 0,
+                    "operator": ">",
+                    "second_state_coefficient": 0.88,
+                    "second_state_exponent": 1,
+                    "second_state_key": "7",
+                    "second_state_lookback": 0,
+                    "second_state_value": 0.76
+                }
+            ],
+            "times_applied": 2024
+        },
+        {
+            "action": "1",
+            "action_coefficient": 0.7,
+            "action_lookback": 0,
+            "conditions": [
+                {
+                    "first_state_coefficient": 0.78,
+                    "first_state_exponent": 1,
+                    "first_state_key": "9",
+                    "first_state_lookback": 0,
+                    "operator": "<",
+                    "second_state_coefficient": 0.62,
+                    "second_state_exponent": 1,
+                    "second_state_key": "6",
+                    "second_state_lookback": 0,
+                    "second_state_value": 0.09
+                },
+                {
+                    "first_state_coefficient": 0.74,
+                    "first_state_exponent": 1,
+                    "first_state_key": "11",
+                    "first_state_lookback": 0,
+                    "operator": ">=",
+                    "second_state_coefficient": 0.06,
+                    "second_state_exponent": 1,
+                    "second_state_key": "9",
+                    "second_state_lookback": 0,
+                    "second_state_value": 0.4
+                },
+                {
+                    "first_state_coefficient": 0.41,
+                    "first_state_exponent": 3,
+                    "first_state_key": "5",
+                    "first_state_lookback": 0,
+                    "operator": ">",
+                    "second_state_coefficient": 0.88,
+                    "second_state_exponent": 1,
+                    "second_state_key": "7",
+                    "second_state_lookback": 0,
+                    "second_state_value": 0.76
+                }
+            ],
+            "times_applied": 3031
+        }
+    ],
+    "times_applied": 3753
+}

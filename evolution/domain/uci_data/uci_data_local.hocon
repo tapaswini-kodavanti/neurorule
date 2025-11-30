@@ -10,6 +10,29 @@
                  "use_bias": true
                  }
              }
+        ],
+        "inputs": [
+            {"name": "Creatinine",               "size": 1, "values": ["float"]},
+            {"name": "BUN",                      "size": 1, "values": ["float"]},
+            {"name": "GFR",                      "size": 1, "values": ["float"]},
+            {"name": "Urine_Output",             "size": 1, "values": ["float"]},
+            {"name": "Diabetes",                 "size": 1, "values": ["int"]},
+            {"name": "Hypertension",             "size": 1, "values": ["int"]},
+            {"name": "Age",                      "size": 1, "values": ["float"]},
+            {"name": "Protein_in_Urine",         "size": 1, "values": ["float"]},
+            {"name": "Water_Intake",             "size": 1, "values": ["float"]},
+            {"name": "Medication_ACE Inhibitor", "size": 1, "values": ["int"]},
+            {"name": "Medication_ARB",           "size": 1, "values": ["int"]},
+            {"name": "Medication_Diuretic",      "size": 1, "values": ["int"]}
+        ]
+        "outputs": [
+            {
+                "name": "CKD_Status",
+                "size": 2,
+                "activation": "softmax",
+                "use_bias": true,
+                "values": ["CKD_Status_0", "CKD_Status_1"]
+            }
         ]
     },
     "domain_config": {
@@ -17,18 +40,23 @@
         "fitness"       : "uci_nn_fitness",
         "config_filter_class_name": "SklearnNetworkConfigFilter",
         "evaluator_class_name": "UciDataEvaluator",
-        "data_set": "load_wine"
-
-        # "synthetic_data_file": "data/breast_cancer/datasets/mix/80_percent/300_samples.csv",
-        # "weights_file": "data/breast_cancer/model_weights/baseline/80_percent.pth",
-        # "in_distribution_data": "data/breast_cancer/datasets/baseline/80_percent/in_distribution.csv",
-        # "out_of_distribution_data": "data/breast_cancer/datasets/baseline/80_percent/out_of_distribution.csv",
 
 
-        "synthetic_data_file": "data/wine/datasets/mix/80_percent/300_samples.csv",
-        "weights_file": "data/wine/model_weights/baseline/80_percent.pth",
-        "in_distribution_data": "data/wine/datasets/baseline/80_percent/in_distribution.csv",
-        "out_of_distribution_data": "data/wine/datasets/baseline/80_percent/out_of_distribution.csv",
+        "data_set": "load_wine",
+        "raw_data_file": "data/kidney/datasets/raw_data/kidney_modified.csv",
+        # "raw_data_file": "data/heart_disease/datasets/raw_data/heart_modified.csv",
+        "target_names": ["CKD_Status_0", "CKD_Status_1"],
+        # "target_names": ["HeartDisease_0", "HeartDisease_1"],
+
+        # "synthetic_data_file": "data/heart_disease/datasets/mix/90_percent/150_samples.csv",
+        # "weights_file": "data/heart_disease/model_weights/baseline/90_percent.pth",
+        # "in_distribution_data": "data/heart_disease/datasets/baseline/90_percent/in_distribution.csv",
+        # "out_of_distribution_data": "data/heart_disease/datasets/baseline/90_percent/out_of_distribution.csv",
+
+        "synthetic_data_file": "data/kidney/datasets/mix/99.8_percent/300_samples.csv",
+        "weights_file": "data/kidney/model_weights/baseline/99.8_percent.pth",
+        "in_distribution_data": "data/kidney/datasets/baseline/99.8_percent/in_distribution.csv",
+        "out_of_distribution_data": "data/kidney/datasets/baseline/99.8_percent/out_of_distribution.csv",
     },
     "evolution": {
         "nb_generations": 200,
@@ -50,8 +78,10 @@
         "esp_port": 50051,
         "representation": "RuleBased",
         # "representation": "NNWeights",
-        "experiment_id":"uci_wine_test",
+        # "experiment_id":"uci_wine_test",
         # "experiment_id":"uci_cancer_test",
+        # "experiment_id":"uci_heart_test",
+        "experiment_id":"uci_kidney_test",
         "reevaluate_elites": false,
         "distributed" : false,
         "coevolution" : false,

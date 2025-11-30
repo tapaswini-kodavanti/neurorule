@@ -16,6 +16,12 @@ from sklearn.preprocessing import StandardScaler
 # def uci_data_fitness(inputs, predictions, target_values):
 def uci_data_fitness(predictions, target_values):
     # inputs is added here to keep it consistent in the evaluator class
+    
+    # if type(predictions[0]) == int:
+    #     print("need to one-hot encode")
+    #     pred_array = np.array(predictions)
+    #     predictions = np.stack([pred_array == 0, pred_array == 1], axis=1)  # bools
+
     fitness = 0
     number_of_cases = len(target_values)
     if number_of_cases > 0:
@@ -29,7 +35,7 @@ def uci_nn_fitness(inputs, predictions, weights_filename, num_classes):
     model = MLP(input_dim=inputs.shape[1], num_classes=num_classes)
 
     # Load weights
-    WEIGHTS_PATH = os.path.join(EXPERIMENTS_DIR, weights_filename) # TODO: don't hardcode this
+    WEIGHTS_PATH = os.path.join(EXPERIMENTS_DIR, weights_filename)
     model.load_state_dict(torch.load(WEIGHTS_PATH))
     model.eval()
 

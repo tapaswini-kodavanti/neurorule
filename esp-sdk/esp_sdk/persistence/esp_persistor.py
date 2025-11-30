@@ -363,7 +363,13 @@ class EspPersistor:
         :param gen_folder: the folder to save to
         :return: nothing
         """
-        objectives = self.config['evolution'].get("fitness", DEFAULT_FITNESS)
+        # objectives = self.config['evolution'].get("fitness", DEFAULT_FITNESS)
+        objectives = [
+            {"metric_name": "score", "maximize": True},
+            {"metric_name": "in_distribution_accuracy", "maximize": True},
+            {"metric_name": "out_of_distribution_accuracy", "maximize": True},
+            {"metric_name": "baseline_accuracy", "maximize": True},
+        ]
         for objective in objectives:
             # Sort the candidates to figure out the best one for this objective
             metric_name = objective["metric_name"]
